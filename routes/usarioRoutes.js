@@ -66,7 +66,7 @@ appUsuario.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
     });
 });
 
-appUsuario.post('/', mdAutenticacion.verificaToken, (req, res) => {
+appUsuario.post('/', (req, res) => {
     var body = req.body;
     var usuario = new usuarioModel({
         nombre: body.nombre,

@@ -13,6 +13,8 @@ app.use(bodyParser.json())
 var appRouetes = require('./routes/appRoutes');
 var usuarioRoutes = require('./routes/usarioRoutes');
 var loginRoutes = require('./routes/loginRoutes');
+var hospitalRoutes = require('./routes/hospitalRoutes');
+var medicosRoutes = require('./routes/medicosRoutes');
 
 // Conexion a base de datos mongodb
 mongoose.connection.openUri('mongodb://localhost:27017/DbMean', (err, res) => {
@@ -24,6 +26,8 @@ mongoose.connection.openUri('mongodb://localhost:27017/DbMean', (err, res) => {
 // Rutas
 app.use('/usuario', usuarioRoutes);
 app.use('/login', loginRoutes);
+app.use('/hospital', hospitalRoutes);
+app.use('/medico', medicosRoutes);
 app.use('/', appRouetes);
 
 // Escuchar peticiones 
