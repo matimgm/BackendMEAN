@@ -5,20 +5,34 @@ var mdAutenticacion = require('../middlewares/autenticacion');
 var appMedico = exress();
 
 appMedico.get('/', (req, res) => {
-    medicoModel.find({}).exec((err, medicos) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'Error Cargando Medicos',
-                errors: err
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
+    medicoModel.find({})
+        .skip(desde)
+        .limit(5)
+        .exec((err, medicos) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error Cargando Medicos',
+                    errors: err
+                });
+            }
+            medicoModel.countDocuments({}, (err, cantidadMedicos) => {
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        mensaje: 'Error Cargando Medicos',
+                        errors: err
+                    });
+                }
+                res.status(200).json({
+                    ok: true,
+                    medicos: medicos,
+                    cantidadMedicos: cantidadMedicos
+                });
             });
-        }
-
-        res.status(200).json({
-            ok: true,
-            medicos: medicos
         });
-    });
 });
 
 

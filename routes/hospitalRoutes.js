@@ -5,20 +5,35 @@ var mdAutenticacion = require('../middlewares/autenticacion');
 var appHospital = exress();
 
 appHospital.get('/', (req, res) => {
-    hospitalModel.find({}).exec((err, hospitales) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'Error Cargando Hospitales',
-                errors: err
-            });
-        }
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
 
-        res.status(200).json({
-            ok: true,
-            hospitales: hospitales
+    hospitalModel.find({})
+        .skip(desde)
+        .limit(5)
+        .exec((err, hospitales) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error Cargando Hospitales',
+                    errors: err
+                });
+            }
+            hospitalModel.countDocuments({}, (err, cantidadHospitales) => {
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        mensaje: 'Error Cargando Hospitales',
+                        errors: err
+                    });
+                }
+                res.status(200).json({
+                    ok: true,
+                    hospitales: hospitales,
+                    cantidadHospitales: cantidadHospitales
+                });
+            });
         });
-    });
 });
 
 

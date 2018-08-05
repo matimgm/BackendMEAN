@@ -6,20 +6,36 @@ var mdAutenticacion = require('../middlewares/autenticacion');
 var appUsuario = exress();
 
 appUsuario.get('/', (req, res, next) => {
-    usuarioModel.find({}, (err, usuarios) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'Error Cargando usuarios',
-                errors: err
-            });
-        }
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
 
-        res.status(200).json({
-            ok: true,
-            usuarios: usuarios
+    usuarioModel.find({}, 'nombre email img role')
+        .skip(desde)
+        .limit(5)
+        .exec((err, usuarios) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error Cargando usuarios',
+                    errors: err
+                });
+            }
+            usuarioModel.countDocuments({}, (err, cantidadUsuarios) => {
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        mensaje: 'Error Cargando usuarios',
+                        errors: err
+                    });
+                }
+                res.status(200).json({
+                    ok: true,
+                    usuarios: usuarios,
+                    cantidadUsuarios: cantidadUsuarios
+                });
+            });
+
         });
-    });
 });
 
 
